@@ -2,12 +2,14 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 
 
-const GetgitubUser=(query)=>{
+const GetgitubUser=(query,page=1)=>{
     
    return  axios(`https://api.github.com/search/users`,{
         method:"GET",
         params:{
          q:query,
+         per_page:5,
+         page
         }
     }
     )
@@ -21,11 +23,13 @@ export const Github = ()=>{
     const [error,setError] =useState(false)
     const [text,setText] =useState('')
     const [query,setquery]=useState("masai")
+    const [page,setPage] =useState(1)
 
     const handlsearch =(query)=>setquery(query)
+    const handlePage=()=>setPage(page)
   
     useEffect(()=>{
-        GetgitubUser(query)
+        GetgitubUser(query,page)
         .then((res)=>{
       setdata(res.data.items)
         })
@@ -33,7 +37,7 @@ export const Github = ()=>{
          setError(true)
         })
 
-    },[query])
+    },[query,page])
 console.log(text)
     console.log(data)
     return(
@@ -52,6 +56,8 @@ console.log(text)
                   
               )
           })}
+          <button disabled={page==1} onClick={()=>setPage(page-1)}>Prev</button>
+          <button onClick={()=>setPage(page+1)}>Next</button>
         </div>
 
     )
