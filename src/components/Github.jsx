@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
-
+//https://api.github.com/orgs/ORG/repos
+//https://api.github.com/search/users
+//https://api.github.com/users/Amir98375/repos?page=1
 
 const GetgitubUser=(query,page=1)=>{
-    
-   return  axios(`https://api.github.com/search/users`,{
+    console.log("q",query)
+   return  axios(`https://api.github.com/users/${query}/repos`,{
         method:"GET",
         params:{
-         q:query,
+         
          per_page:5,
          page
         }
@@ -22,7 +24,7 @@ export const Github = ()=>{
     const [data,setdata] =useState([])
     const [error,setError] =useState(false)
     const [text,setText] =useState('')
-    const [query,setquery]=useState("masai")
+    const [query,setquery]=useState("Amir98375")
     const [page,setPage] =useState(1)
 
     const handlsearch =(query)=>setquery(query)
@@ -31,7 +33,7 @@ export const Github = ()=>{
     useEffect(()=>{
         GetgitubUser(query,page)
         .then((res)=>{
-      setdata(res.data.items)
+      setdata(res.data)
         })
         .catch((err)=>{
          setError(true)
@@ -39,7 +41,9 @@ export const Github = ()=>{
 
     },[query,page])
 console.log(text)
-    console.log(data)
+    //console.log(data)
+    let x = data.length
+    console.log(x)
     return(
         <div>
             <div>
@@ -50,8 +54,10 @@ console.log(text)
               return(
                  
                   <div style={{display:"flex" , direction:"col"}}>
-                      <img height={"50px"} width="100px" src={el.avatar_url} alt="" />
-                      <p>{el.login}</p>
+                      <img height={"50px"} width="100px" src={el.owner.avatar_url} alt="" />
+                      <br></br>
+                      <p>{el.name}</p>
+                     
                   </div>
                   
               )
